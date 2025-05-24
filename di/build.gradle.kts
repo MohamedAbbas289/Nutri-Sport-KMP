@@ -23,7 +23,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "di"
             isStatic = true
         }
     }
@@ -39,6 +39,10 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -47,7 +51,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.shared"
+    namespace = "org.example.di"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
