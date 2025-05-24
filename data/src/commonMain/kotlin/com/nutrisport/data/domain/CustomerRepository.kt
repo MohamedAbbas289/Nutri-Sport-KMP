@@ -9,4 +9,6 @@ interface CustomerRepository {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )
+
+    fun getCurrentUserId(): String?
 }
