@@ -9,23 +9,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import com.nutrisport.auth.component.GoogleButton
 import com.nutrisport.shared.Alpha
 import com.nutrisport.shared.BebasNeueFont
 import com.nutrisport.shared.FontSize
 import com.nutrisport.shared.Surface
+import com.nutrisport.shared.SurfaceBrand
+import com.nutrisport.shared.SurfaceError
 import com.nutrisport.shared.TextPrimary
 import com.nutrisport.shared.TextSecondary
+import com.nutrisport.shared.TextWhite
 import rememberMessageBarState
 
 @Composable
 fun AuthScreen() {
     val messageBarState = rememberMessageBarState()
+    var loadingState by remember { mutableStateOf(false) }
+
     Scaffold { padding ->
         ContentWithMessageBar(
             contentBackgroundColor = Surface,
@@ -34,7 +44,11 @@ fun AuthScreen() {
                 bottom = padding.calculateBottomPadding()
             ),
             messageBarState = messageBarState,
-            errorMaxLines = 2
+            errorMaxLines = 2,
+            errorContainerColor = SurfaceError,
+            errorContentColor = TextWhite,
+            successContainerColor = SurfaceBrand,
+            successContentColor = TextPrimary
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -64,7 +78,30 @@ fun AuthScreen() {
                         color = TextPrimary
                     )
                 }
-                GoogleButton(loading = false) { }
+                GoogleButtonUiContainerFirebase(
+                    linkAccount = false,
+                    onResult = { result ->
+                        result.onSuccess { user ->
+                            messageBarState.addSuccess("Authentication Successful!")
+                            loadingState = false
+                        }.onFailure { error ->
+                            if (error.message?.contains("A network error") == true) {
+                                messageBarState.addError("Internet Connection Unavailable.")
+                            } else if (error.message?.contains("Idtoken is null") == true) {
+                                messageBarState.addError("Sign in canceled.")
+                            } else {
+                                messageBarState.addError(error.message ?: "Unknown Error.")
+                            }
+                            loadingState = false
+                        }
+                    }
+                ) {
+                    GoogleButton(loading = loadingState) {
+                        loadingState = true
+                        this@GoogleButtonUiContainerFirebase.onClick()
+                    }
+                }
+
             }
         }
     }
