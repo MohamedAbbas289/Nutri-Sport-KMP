@@ -19,7 +19,9 @@ import nutrisport.shared.generated.resources.log_in
 import nutrisport.shared.generated.resources.log_out
 import nutrisport.shared.generated.resources.map_pin
 import nutrisport.shared.generated.resources.menu
+import nutrisport.shared.generated.resources.minus
 import nutrisport.shared.generated.resources.paypal_logo
+import nutrisport.shared.generated.resources.plus
 import nutrisport.shared.generated.resources.right_arrow
 import nutrisport.shared.generated.resources.search
 import nutrisport.shared.generated.resources.serbia
