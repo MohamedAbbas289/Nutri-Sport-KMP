@@ -32,6 +32,7 @@ include(":di")
 include(":feature:auth")
 
 include(":feature:home")
+include(":feature:profile")
 include(":feature:auth")
 include(":navigation")
 include(":composeApp")
