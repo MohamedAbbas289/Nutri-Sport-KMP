@@ -62,7 +62,8 @@ import rememberMessageBarState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeGraphScreen(
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -110,7 +111,7 @@ fun HomeGraphScreen(
             .systemBarsPadding()
     ) {
         CustomDrawer(
-            onProfileClick = { /*TODO*/ },
+            onProfileClick = navigateToProfile,
             onBlogClick = { /*TODO*/ },
             onLocationsClick = { /*TODO*/ },
             onContactClick = { /*TODO*/ },
