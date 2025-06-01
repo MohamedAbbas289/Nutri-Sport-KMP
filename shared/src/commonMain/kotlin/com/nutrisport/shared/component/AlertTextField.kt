@@ -25,7 +25,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AlertTextField(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     text: String,
     icon: DrawableResource? = null,
     onClick: () -> Unit
@@ -41,7 +41,7 @@ fun AlertTextField(
             .clip(RoundedCornerShape(size = 6.dp))
             .clickable { onClick() }
             .padding(
-                vertical = 20.dp,
+                vertical = 16.dp,
                 horizontal = 16.dp
             ),
         verticalAlignment = Alignment.CenterVertically

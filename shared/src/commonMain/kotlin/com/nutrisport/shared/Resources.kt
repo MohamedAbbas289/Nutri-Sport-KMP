@@ -2,6 +2,7 @@ package com.nutrisport.shared
 
 
 import nutrisport.shared.generated.resources.Res
+import nutrisport.shared.generated.resources.algeria
 import nutrisport.shared.generated.resources.back_arrow
 import nutrisport.shared.generated.resources.book
 import nutrisport.shared.generated.resources.cat
@@ -11,22 +12,28 @@ import nutrisport.shared.generated.resources.close
 import nutrisport.shared.generated.resources.delete
 import nutrisport.shared.generated.resources.dollar
 import nutrisport.shared.generated.resources.edit
+import nutrisport.shared.generated.resources.egypt
 import nutrisport.shared.generated.resources.google_logo
 import nutrisport.shared.generated.resources.grid
 import nutrisport.shared.generated.resources.home
 import nutrisport.shared.generated.resources.india
+import nutrisport.shared.generated.resources.iraq
+import nutrisport.shared.generated.resources.libya
 import nutrisport.shared.generated.resources.log_in
 import nutrisport.shared.generated.resources.log_out
 import nutrisport.shared.generated.resources.map_pin
 import nutrisport.shared.generated.resources.menu
 import nutrisport.shared.generated.resources.minus
+import nutrisport.shared.generated.resources.morocco
 import nutrisport.shared.generated.resources.paypal_logo
 import nutrisport.shared.generated.resources.plus
 import nutrisport.shared.generated.resources.right_arrow
+import nutrisport.shared.generated.resources.saudi_arabia
 import nutrisport.shared.generated.resources.search
 import nutrisport.shared.generated.resources.serbia
 import nutrisport.shared.generated.resources.shopping_cart
 import nutrisport.shared.generated.resources.shopping_cart_image
+import nutrisport.shared.generated.resources.syria
 import nutrisport.shared.generated.resources.unlock
 import nutrisport.shared.generated.resources.usa
 import nutrisport.shared.generated.resources.user
@@ -73,5 +80,13 @@ object Resources {
         val India = Res.drawable.india
         val Usa = Res.drawable.usa
         val Serbia = Res.drawable.serbia
+        val Algeria = Res.drawable.algeria
+        val Egypt = Res.drawable.egypt
+        val Iraq = Res.drawable.iraq
+        val Libya = Res.drawable.libya
+        val Morocco = Res.drawable.morocco
+        val SaudiArabia = Res.drawable.saudi_arabia
+        val Syria = Res.drawable.syria
+
     }
 }
