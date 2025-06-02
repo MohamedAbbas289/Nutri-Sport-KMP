@@ -48,7 +48,7 @@ fun AlertTextField(
     ) {
         if (icon != null) {
             Image(
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(18.dp),
                 painter = painterResource(icon),
                 contentDescription = "text field icon"
             )

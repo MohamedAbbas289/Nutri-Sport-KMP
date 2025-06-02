@@ -46,6 +46,7 @@ kotlin {
 
             implementation(project(path = ":feature:auth"))
             implementation(project(path = ":feature:home"))
+            implementation(project(path = ":feature:profile"))
             implementation(project(path = ":data"))
         }
         commonTest.dependencies {

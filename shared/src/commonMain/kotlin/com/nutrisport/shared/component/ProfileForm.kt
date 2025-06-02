@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.nutrisport.shared.component.dialog.CountryPickerDialog
 import com.nutrisport.shared.domain.Country
@@ -33,11 +34,11 @@ fun ProfileForm(
     lastName: String,
     onLastNameChange: (String) -> Unit,
     email: String,
-    city: String,
+    city: String?,
     onCityChange: (String) -> Unit,
     postalCode: Int?,
     onPostalCodeChange: (Int?) -> Unit,
-    address: String,
+    address: String?,
     onAddressChange: (String) -> Unit,
     phoneNumber: String?,
     onPhoneNumberChange: (String) -> Unit
@@ -58,10 +59,6 @@ fun ProfileForm(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(
-                horizontal = 24.dp,
-                vertical = 12.dp
-            )
             .imePadding()
             .verticalScroll(state = rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -86,21 +83,22 @@ fun ProfileForm(
         )
         CustomTextField(
             placeHolder = "City",
-            value = city,
+            value = city ?: "",
             onValueChange = onCityChange,
-            error = city.length !in 3..50
+            error = city?.length !in 3..50
         )
         CustomTextField(
             placeHolder = "Postal Code",
             value = "${postalCode ?: ""}",
             onValueChange = { onPostalCodeChange(it.toIntOrNull()) },
-            error = postalCode.toString().length !in 3..8
+            error = postalCode == null || postalCode.toString().length !in 3..8,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         CustomTextField(
             placeHolder = "Address",
-            value = address,
+            value = address ?: "",
             onValueChange = onAddressChange,
-            error = address.length !in 3..100
+            error = address?.length !in 3..100
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -116,7 +114,8 @@ fun ProfileForm(
                 placeHolder = "Phone Number",
                 value = phoneNumber ?: "",
                 onValueChange = onPhoneNumberChange,
-                error = phoneNumber?.length !in 5..10
+                error = phoneNumber?.length !in 5..15,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
     }

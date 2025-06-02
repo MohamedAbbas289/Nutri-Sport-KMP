@@ -7,6 +7,8 @@ import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 
 class CustomerRepositoryImpl : CustomerRepository {
     override suspend fun createCustomer(
@@ -42,6 +44,76 @@ class CustomerRepositoryImpl : CustomerRepository {
 
     override fun getCurrentUserId(): String? {
         return Firebase.auth.currentUser?.uid
+    }
+
+    override fun readCustomerFlow(): Flow<RequestState<Customer>> = channelFlow {
+        try {
+            val userId = getCurrentUserId()
+            if (userId != null) {
+                val database = Firebase.firestore
+                database.collection("customer")
+                    .document(userId)
+                    .snapshots
+                    .collect { document ->
+                        if (document.exists) {
+                            val customer = Customer(
+                                id = document.id,
+                                firstName = document.get("firstName"),
+                                lastName = document.get("lastName"),
+                                email = document.get("email"),
+                                city = document.get("city"),
+                                postalCode = document.get("postalCode"),
+                                address = document.get("address"),
+                                phoneNumber = document.get("phoneNumber"),
+                                cartItem = document.get("cartItem")
+                            )
+                            send(RequestState.Success(customer))
+                        } else {
+                            send(RequestState.Error("Customer does not exist."))
+                        }
+                    }
+            } else {
+                send(RequestState.Error("User is not available."))
+            }
+        } catch (e: Exception) {
+            send(RequestState.Error("Error while reading customer: ${e.message}"))
+        }
+    }
+
+    override suspend fun updateCustomer(
+        customer: Customer,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val userId = getCurrentUserId()
+            if (userId != null) {
+                val firestore = Firebase.firestore
+                val customerCollection = firestore.collection("customer")
+
+                val existingCustomer = customerCollection
+                    .document(customer.id)
+                    .get()
+                if (existingCustomer.exists) {
+                    customerCollection.document(customer.id)
+                        .update(
+                            "firstName" to customer.firstName,
+                            "lastName" to customer.lastName,
+                            "city" to customer.city,
+                            "postalCode" to customer.postalCode,
+                            "address" to customer.address,
+                            "phoneNumber" to customer.phoneNumber
+                        )
+                    onSuccess()
+                } else {
+                    onError("Customer not found.")
+                }
+            } else {
+                onError("User is not available.")
+            }
+        } catch (e: Exception) {
+            onError("Error while updating customer information: ${e.message}")
+        }
     }
 
     override suspend fun signOut(): RequestState<Unit> {
