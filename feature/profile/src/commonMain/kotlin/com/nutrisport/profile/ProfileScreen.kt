@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -93,6 +94,7 @@ fun ProfileScreen(
                         top = 12.dp,
                         bottom = 24.dp
                     )
+                    .imePadding()
             ) {
                 screenReady.DisplayResult(
                     onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },
@@ -122,20 +124,16 @@ fun ProfileScreen(
                             PrimaryButton(
                                 text = "Update",
                                 icon = Resources.Icon.Checkmark,
-                                //enabled = isFormValid,
+                                enabled = isFormValid,
                                 onClick = {
-                                    if (!isFormValid) {
-                                        messageBarState.addError("Please fill all required fields with the right information!")
-                                    } else {
-                                        viewModel.updateCustomer(
-                                            onSuccess = {
-                                                messageBarState.addSuccess("Profile updated successfully!")
-                                            },
-                                            onError = { message ->
-                                                messageBarState.addError(message)
-                                            }
-                                        )
-                                    }
+                                    viewModel.updateCustomer(
+                                        onSuccess = {
+                                            messageBarState.addSuccess("Profile updated successfully!")
+                                        },
+                                        onError = { message ->
+                                            messageBarState.addError(message)
+                                        }
+                                    )
                                 }
                             )
                         }
