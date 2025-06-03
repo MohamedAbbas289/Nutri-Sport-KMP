@@ -21,4 +21,7 @@ sealed class Screen {
 
     @Serializable
     data object Profile : Screen()
+
+    @Serializable
+    data object AdminPanel : Screen()
 }
