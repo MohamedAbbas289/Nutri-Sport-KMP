@@ -1,5 +1,6 @@
 package com.nutrisport.di
 
+import com.nutrisport.admin_panel.AdminPanelViewModel
 import com.nutrisport.auth.AuthViewModel
 import com.nutrisport.data.AdminRepositoryImpl
 import com.nutrisport.data.CustomerRepositoryImpl
@@ -21,6 +22,7 @@ val sharedModule = module {
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::ManageProductViewModel)
+    viewModelOf(::AdminPanelViewModel)
 }
 
 expect val targetModule: Module

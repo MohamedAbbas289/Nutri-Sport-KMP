@@ -106,7 +106,7 @@ fun ProductCard(
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -119,17 +119,18 @@ fun ProductCard(
                         Spacer(modifier = Modifier.weight(1f))
                     } else {
                         Row(
+                            modifier = Modifier,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                modifier = Modifier.size(14.dp),
+                                modifier = Modifier.size(18.dp),
                                 painter = painterResource(Resources.Icon.Weight),
                                 contentDescription = "Weight icon"
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "${product.weight}g",
-                                fontSize = FontSize.EXTRA_SMALL,
+                                fontSize = FontSize.SMALL,
                                 color = TextPrimary
                             )
                         }
