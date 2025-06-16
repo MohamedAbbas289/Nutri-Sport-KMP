@@ -20,6 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,6 +85,7 @@ fun ManageProductScreen(
     val isFormValid = viewModel.isFormValid
     val thumbnailUploaderState = viewModel.thumbnailUploaderState
     var showCategoriesDialog by remember { mutableStateOf(false) }
+    var dropDownMenuOpened by remember { mutableStateOf(false) }
 
     val photoPicker = koinInject<PhotoPicker>()
     photoPicker.InitializePhotoPicker(
@@ -130,6 +133,49 @@ fun ManageProductScreen(
                             contentDescription = "Back Arrow icon",
                             tint = IconPrimary
                         )
+                    }
+                },
+                actions = {
+                    id.takeIf { it != null }?.let {
+                        Box {
+                            IconButton(onClick = { dropDownMenuOpened = true }) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.VerticalMenu),
+                                    contentDescription = "Vertical menu icon",
+                                    tint = IconPrimary
+                                )
+                            }
+                            DropdownMenu(
+                                containerColor = Surface,
+                                expanded = dropDownMenuOpened,
+                                onDismissRequest = { dropDownMenuOpened = false }
+                            ) {
+                                DropdownMenuItem(
+                                    leadingIcon = {
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(Resources.Icon.Delete),
+                                            contentDescription = "Delete icon",
+                                            tint = IconPrimary
+                                        )
+                                    },
+                                    text = {
+                                        Text(
+                                            text = "Delete",
+                                            color = TextPrimary,
+                                            fontSize = FontSize.REGULAR
+                                        )
+                                    },
+                                    onClick = {
+                                        dropDownMenuOpened = false
+                                        viewModel.deleteProduct(
+                                            onSuccess = navigateBack,
+                                            onError = { message -> messageBarState.addError(message) }
+                                        )
+                                    }
+                                )
+                            }
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -328,14 +374,26 @@ fun ManageProductScreen(
                     icon = if (id == null) Resources.Icon.Plus else Resources.Icon.Checkmark,
                     enabled = isFormValid,
                     onClick = {
-                        viewModel.createNewProduct(
-                            onSuccess = {
-                                messageBarState.addSuccess("Product created successfully.")
-                            },
-                            onError = { message ->
-                                messageBarState.addError(message)
-                            }
-                        )
+                        if (id != null) {
+                            viewModel.updateProduct(
+                                onSuccess = {
+                                    messageBarState.addSuccess("Product updated successfully.")
+                                },
+                                onError = { message ->
+                                    messageBarState.addError(message)
+                                }
+                            )
+                        } else {
+                            viewModel.createNewProduct(
+                                onSuccess = {
+                                    messageBarState.addSuccess("Product created successfully.")
+                                    navigateBack()
+                                },
+                                onError = { message ->
+                                    messageBarState.addError(message)
+                                }
+                            )
+                        }
                     }
                 )
             }

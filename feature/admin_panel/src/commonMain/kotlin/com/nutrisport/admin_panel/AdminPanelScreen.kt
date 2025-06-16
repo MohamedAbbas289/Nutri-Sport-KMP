@@ -113,7 +113,7 @@ fun AdminPanelScreen(
                     ) { product ->
                         ProductCard(
                             product = product,
-                            onClick = { /*navigateToManageProduct(product.id)*/ }
+                            onClick = { navigateToManageProduct(product.id) }
                         )
                     }
                 }
