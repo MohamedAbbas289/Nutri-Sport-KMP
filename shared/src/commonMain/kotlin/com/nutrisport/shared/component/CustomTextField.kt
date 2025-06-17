@@ -66,6 +66,7 @@ fun CustomTextField(
         keyboardOptions = keyboardOptions,
         singleLine = !expanded,
         colors = TextFieldDefaults.colors(
+            cursorColor = IconSecondary,
             unfocusedContainerColor = SurfaceLighter,
             focusedContainerColor = SurfaceLighter,
             focusedTextColor = TextPrimary,

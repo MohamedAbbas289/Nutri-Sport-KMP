@@ -30,9 +30,9 @@ data class ManageProductState(
     val flavors: String = "",
     val weight: Int? = null,
     val price: Double = 0.0,
-//    val isNew: Boolean = false,
-//    val isPopular: Boolean = false,
-//    val isDiscounted: Boolean = false
+    val isNew: Boolean = false,
+    val isPopular: Boolean = false,
+    val isDiscounted: Boolean = false
 )
 
 class ManageProductViewModel(
@@ -48,10 +48,21 @@ class ManageProductViewModel(
         private set
 
     val isFormValid: Boolean
-        get() = screenState.title.isNotEmpty() &&
+        get() =
+            if (screenState.category == ProductCategory.Accessories) {
+                screenState.title.isNotEmpty() &&
+                        screenState.description.isNotEmpty() &&
+                        screenState.thumbnail.isNotEmpty() &&
+                        screenState.price != 0.0
+            } else {
+                screenState.title.isNotEmpty() &&
                 screenState.description.isNotEmpty() &&
                 screenState.thumbnail.isNotEmpty() &&
+                        screenState.flavors.isNotEmpty() &&
+                        screenState.weight != null &&
                 screenState.price != 0.0
+            }
+
 
     init {
         productId.takeIf { it.isNotEmpty() }?.let { id ->
@@ -70,9 +81,9 @@ class ManageProductViewModel(
                     updateFlavors(product.flavors?.joinToString(",") ?: "")
                     updateWeight(product.weight)
                     updatePrice(product.price)
-                    //updateNew(product.isNew)
-                    //    updatePopular(product.isPopular)
-                    //    updateDiscounted(product.isDiscounted)
+                    updateNew(product.isNew)
+                    updatePopular(product.isPopular)
+                    updateDiscounted(product.isDiscounted)
                 }
             }
         }
@@ -118,17 +129,17 @@ class ManageProductViewModel(
         screenState = screenState.copy(price = value)
     }
 
-//    fun updateNew(value: Boolean) {
-//        screenState = screenState.copy(isNew = value)
-//    }
-//
-//    fun updatePopular(value: Boolean) {
-//        screenState = screenState.copy(isPopular = value)
-//    }
-//
-//    fun updateDiscounted(value: Boolean) {
-//        screenState = screenState.copy(isDiscounted = value)
-//    }
+    fun updateNew(value: Boolean) {
+        screenState = screenState.copy(isNew = value)
+    }
+
+    fun updatePopular(value: Boolean) {
+        screenState = screenState.copy(isPopular = value)
+    }
+
+    fun updateDiscounted(value: Boolean) {
+        screenState = screenState.copy(isDiscounted = value)
+    }
 
     fun createNewProduct(
         onSuccess: () -> Unit,
@@ -144,7 +155,10 @@ class ManageProductViewModel(
                     category = screenState.category.name,
                     flavors = screenState.flavors.split(","),
                     weight = screenState.weight,
-                    price = screenState.price
+                    price = screenState.price,
+                    isNew = screenState.isNew,
+                    isPopular = screenState.isPopular,
+                    isDiscounted = screenState.isDiscounted
                 ),
                 onSuccess = onSuccess,
                 onError = onError
@@ -172,7 +186,7 @@ class ManageProductViewModel(
                 }
 
                 productId.takeIf { it.isNotEmpty() }?.let { id ->
-                    adminRepository.updateImageThumbnail(
+                    adminRepository.updateProductThumbnail(
                         productId = id,
                         downloadUrl = downloadUrl,
                         onSuccess = {
@@ -221,7 +235,10 @@ class ManageProductViewModel(
                             .map { it.trim() }
                             .filter { it.isNotEmpty() },
                         weight = screenState.weight,
-                        price = screenState.price
+                        price = screenState.price,
+                        isNew = screenState.isNew,
+                        isPopular = screenState.isPopular,
+                        isDiscounted = screenState.isDiscounted
                     ),
                     onSuccess = onSuccess,
                     onError = onError
@@ -242,7 +259,7 @@ class ManageProductViewModel(
                 onSuccess = {
                     productId.takeIf { it.isNotEmpty() }?.let { id ->
                         viewModelScope.launch {
-                            adminRepository.updateImageThumbnail(
+                            adminRepository.updateProductThumbnail(
                                 productId = id,
                                 downloadUrl = "",
                                 onSuccess = {
