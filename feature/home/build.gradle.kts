@@ -49,6 +49,7 @@ kotlin {
 
             implementation(project(path = ":shared"))
             implementation(project(path = ":data"))
+            implementation(project(path = ":feature:home:products_overview"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
