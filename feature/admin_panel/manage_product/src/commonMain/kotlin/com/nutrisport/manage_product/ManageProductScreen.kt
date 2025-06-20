@@ -132,7 +132,13 @@ fun ManageProductScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = {
+                        if (screenState.thumbnail.isEmpty()) {
+                            messageBarState.addError("You must add an image before proceeding.")
+                        } else {
+                            navigateBack()
+                        }
+                    }) {
                         Icon(
                             painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = "Back Arrow icon",
