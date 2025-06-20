@@ -24,7 +24,7 @@ import com.nutrisport.shared.TextSecondary
 fun FlavorChip(
     flavor: String,
     isSelected: Boolean = false,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier

@@ -227,8 +227,7 @@ fun DetailsScreen(navigateBack: () -> Unit) {
                                             viewModel.updateFlavor(flavor)
                                             FlavorChip(
                                                 flavor = flavor,
-                                                isSelected = selectedFlavor == flavor,
-                                                onClick = { }
+                                                isSelected = selectedFlavor == flavor
                                             )
                                         } else {
                                             FlavorChip(
