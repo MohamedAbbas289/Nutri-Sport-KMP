@@ -223,12 +223,21 @@ fun DetailsScreen(navigateBack: () -> Unit) {
                                     horizontalArrangement = Arrangement.Center
                                 ) {
                                     selectedProduct.flavors?.forEach { flavor ->
-                                        FlavorChip(
-                                            flavor = flavor,
-                                            isSelected = selectedFlavor == flavor,
-                                            onClick = { viewModel.updateFlavor(flavor) }
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
+                                        if (selectedProduct.flavors?.size == 1) {
+                                            viewModel.updateFlavor(flavor)
+                                            FlavorChip(
+                                                flavor = flavor,
+                                                isSelected = selectedFlavor == flavor,
+                                                onClick = { }
+                                            )
+                                        } else {
+                                            FlavorChip(
+                                                flavor = flavor,
+                                                isSelected = selectedFlavor == flavor,
+                                                onClick = { viewModel.updateFlavor(flavor) }
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                        }
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(24.dp))
