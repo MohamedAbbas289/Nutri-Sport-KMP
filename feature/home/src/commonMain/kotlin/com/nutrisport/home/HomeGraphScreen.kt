@@ -69,7 +69,8 @@ import rememberMessageBarState
 fun HomeGraphScreen(
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToAdminPanel: () -> Unit
+    navigateToAdminPanel: () -> Unit,
+    navigateToDetails: (String) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -216,7 +217,9 @@ fun HomeGraphScreen(
                             navController = navController,
                             startDestination = Screen.ProductsOverview
                         ) {
-                            composable<Screen.ProductsOverview> { ProductsOverviewScreen() }
+                            composable<Screen.ProductsOverview> {
+                                ProductsOverviewScreen(navigateToDetails = navigateToDetails)
+                            }
                             composable<Screen.Cart> { }
                             composable<Screen.Categories> { }
                         }
