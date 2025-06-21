@@ -57,7 +57,9 @@ import com.nutrisport.shared.TextWhite
 import com.nutrisport.shared.component.InfoCard
 import com.nutrisport.shared.component.LoadingCard
 import com.nutrisport.shared.component.PrimaryButton
+import com.nutrisport.shared.component.QuantityCounter
 import com.nutrisport.shared.domain.ProductCategory
+import com.nutrisport.shared.domain.QuantityCounterSize
 import com.nutrisport.shared.util.DisplayResult
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -69,7 +71,7 @@ fun DetailsScreen(navigateBack: () -> Unit) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val product by viewModel.product.collectAsState()
-//    val quantity = viewModel.quantity
+    val quantity = viewModel.quantity
     val selectedFlavor = viewModel.selectedFlavor
 
     Scaffold(
@@ -94,13 +96,17 @@ fun DetailsScreen(navigateBack: () -> Unit) {
                     }
                 },
                 actions = {
-//                    QuantityCounter(
-//                        size = QuantityCounterSize.Large,
-//                        value = quantity,
-//                        onMinusClick = viewModel::updateQuantity,
-//                        onPlusClick = viewModel::updateQuantity
-//                    )
-//                    Spacer(modifier = Modifier.width(16.dp))
+                    QuantityCounter(
+                        size = QuantityCounterSize.Large,
+                        value = quantity.toString(),
+                        onMinusClick = {
+                            viewModel.updateQuantity(quantity - 1)
+                        },
+                        onPlusClick = {
+                            viewModel.updateQuantity(quantity + 1)
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Surface,
@@ -247,10 +253,10 @@ fun DetailsScreen(navigateBack: () -> Unit) {
                                 enabled = if (selectedProduct.flavors?.isNotEmpty() == true) selectedFlavor != null
                                 else true,
                                 onClick = {
-//                                    viewModel.addItemToCart(
-//                                        onSuccess = { messageBarState.addSuccess("Product added to cart.") },
-//                                        onError = { message -> messageBarState.addError(message) }
-//                                    )
+                                    viewModel.addItemToCart(
+                                        onSuccess = { messageBarState.addSuccess("Product added to cart.") },
+                                        onError = { message -> messageBarState.addError(message) }
+                                    )
                                 }
                             )
                         }

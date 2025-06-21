@@ -12,7 +12,7 @@ data class Customer(
     val postalCode: Int? = null,
     val address: String? = null,
     val phoneNumber: PhoneNumber? = null,
-    val cartItem: List<CartItem> = emptyList(),
+    val cart: List<CartItem> = emptyList(),
     val isAdmin: Boolean = false
 )
 

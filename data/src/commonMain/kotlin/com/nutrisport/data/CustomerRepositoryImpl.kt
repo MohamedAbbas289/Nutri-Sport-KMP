@@ -1,6 +1,7 @@
 package com.nutrisport.data
 
 import com.nutrisport.data.domain.CustomerRepository
+import com.nutrisport.shared.domain.CartItem
 import com.nutrisport.shared.domain.Customer
 import com.nutrisport.shared.util.RequestState
 import dev.gitlive.firebase.Firebase
@@ -74,7 +75,7 @@ class CustomerRepositoryImpl : CustomerRepository {
                                 postalCode = document.get("postalCode"),
                                 address = document.get("address"),
                                 phoneNumber = document.get("phoneNumber"),
-                                cartItem = document.get("cartItem"),
+                                cart = document.get("cart"),
                                 isAdmin = privateDataDocument.get("isAdmin")
                             )
                             send(RequestState.Success(customer))
@@ -123,6 +124,40 @@ class CustomerRepositoryImpl : CustomerRepository {
             }
         } catch (e: Exception) {
             onError("Error while updating customer information: ${e.message}")
+        }
+    }
+
+    override suspend fun addItemToCart(
+        cartItem: CartItem,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        try {
+            val userId = getCurrentUserId()
+            if (userId != null) {
+                val database = Firebase.firestore
+                val customerCollection = database.collection("customer")
+
+                val existingCustomer = customerCollection
+                    .document(userId)
+                    .get()
+                if (existingCustomer.exists) {
+                    val existingCartItem = existingCustomer.get<List<CartItem>>("cart")
+                    val updatedCartItem = existingCartItem + cartItem
+                    customerCollection.document(userId)
+                        .set(
+                            data = mapOf("cart" to updatedCartItem),
+                            merge = true
+                        )
+                    onSuccess()
+                } else {
+                    onError("Customer not found.")
+                }
+            } else {
+                onError("User is not available.")
+            }
+        } catch (e: Exception) {
+            onError("Error while adding item to cart: ${e.message}")
         }
     }
 
