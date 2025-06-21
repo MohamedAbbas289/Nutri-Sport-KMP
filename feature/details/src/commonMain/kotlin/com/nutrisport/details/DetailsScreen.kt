@@ -98,13 +98,9 @@ fun DetailsScreen(navigateBack: () -> Unit) {
                 actions = {
                     QuantityCounter(
                         size = QuantityCounterSize.Large,
-                        value = quantity.toString(),
-                        onMinusClick = {
-                            viewModel.updateQuantity(quantity - 1)
-                        },
-                        onPlusClick = {
-                            viewModel.updateQuantity(quantity + 1)
-                        }
+                        value = quantity,
+                        onMinusClick = viewModel::updateQuantity,
+                        onPlusClick = viewModel::updateQuantity
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                 },

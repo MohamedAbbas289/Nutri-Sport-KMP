@@ -63,7 +63,6 @@ class DetailsViewModel(
     }
 
     fun updateQuantity(value: Int) {
-        if (value in 1..10)
-            quantity = value
+        quantity = value
     }
 }
