@@ -192,7 +192,7 @@ fun CategorySearchScreen(
                     bottom = padding.calculateBottomPadding()
                 ),
             onLoading = {
-                LoadingCard()
+                LoadingCard(modifier = Modifier.fillMaxSize())
             },
             onSuccess = { categoryProducts ->
                 AnimatedContent(
