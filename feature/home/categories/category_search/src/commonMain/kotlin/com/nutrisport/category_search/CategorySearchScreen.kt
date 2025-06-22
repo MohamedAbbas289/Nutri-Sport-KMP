@@ -1,4 +1,5 @@
-package com.nutrisport.admin_panel
+package com.nutrisport.category_search
+
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import com.nutrisport.shared.Alpha
 import com.nutrisport.shared.BebasNeueFont
 import com.nutrisport.shared.BorderIdle
-import com.nutrisport.shared.ButtonPrimary
 import com.nutrisport.shared.FontSize
 import com.nutrisport.shared.IconPrimary
 import com.nutrisport.shared.IconSecondary
@@ -49,18 +48,20 @@ import com.nutrisport.shared.TextPrimary
 import com.nutrisport.shared.component.InfoCard
 import com.nutrisport.shared.component.LoadingCard
 import com.nutrisport.shared.component.ProductCard
+import com.nutrisport.shared.domain.ProductCategory
 import com.nutrisport.shared.util.DisplayResult
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AdminPanelScreen(
-    navigateBack: () -> Unit,
-    navigateToManageProduct: (String?) -> Unit
+fun CategorySearchScreen(
+    category: ProductCategory,
+    navigateToDetails: (String) -> Unit,
+    navigateBack: () -> Unit
 ) {
-    val viewModel = koinViewModel<AdminPanelViewModel>()
-    val products = viewModel.filteredProducts.collectAsState()
+    val viewModel = koinViewModel<CategoryScreenViewModel>()
+    val filteredProducts by viewModel.filteredProducts.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     var searchBarVisible by mutableStateOf(false)
 
@@ -146,7 +147,7 @@ fun AdminPanelScreen(
                     TopAppBar(
                         title = {
                             Text(
-                                text = "ADMIN PANEL",
+                                text = category.title,
                                 fontFamily = BebasNeueFont(),
                                 fontSize = FontSize.LARGE,
                                 color = TextPrimary
@@ -169,7 +170,9 @@ fun AdminPanelScreen(
                             actionIconContentColor = IconPrimary
                         ),
                         actions = {
-                            IconButton(onClick = { searchBarVisible = true }) {
+                            IconButton(
+                                onClick = { searchBarVisible = true }
+                            ) {
                                 Icon(
                                     painter = painterResource(Resources.Icon.Search),
                                     contentDescription = "Search icon",
@@ -180,63 +183,52 @@ fun AdminPanelScreen(
                     )
                 }
             }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navigateToManageProduct(null) },
-                containerColor = ButtonPrimary,
-                contentColor = IconPrimary
-            ) {
-                Icon(
-                    painter = painterResource(Resources.Icon.Plus),
-                    contentDescription = "Add icon"
-                )
-            }
         }
     ) { padding ->
-        products.value.DisplayResult(
+        filteredProducts.DisplayResult(
             modifier = Modifier
                 .padding(
                     top = padding.calculateTopPadding(),
                     bottom = padding.calculateBottomPadding()
                 ),
             onLoading = {
-                LoadingCard(modifier = Modifier.fillMaxSize())
+                LoadingCard()
             },
-            onSuccess = { lastProduct ->
+            onSuccess = { categoryProducts ->
                 AnimatedContent(
-                    targetState = lastProduct
+                    targetState = categoryProducts
                 ) { products ->
-                    if (products.isEmpty()) {
-                        InfoCard(
-                            image = Resources.Image.Cat,
-                            title = "Oops..",
-                            subTitle = "No products found."
-                        )
-                    } else {
+                    if (products.isNotEmpty()) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                                .padding(all = 12.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(
-                                items = lastProduct,
+                                items = products,
                                 key = { it.id }
                             ) { product ->
                                 ProductCard(
                                     product = product,
-                                    onClick = { navigateToManageProduct(product.id) }
+                                    onClick = navigateToDetails
                                 )
                             }
                         }
+                    } else {
+                        InfoCard(
+                            title = "Nothing Here!",
+                            subTitle = "We couldn't find any product.",
+                            image = Resources.Image.Cat
+                        )
                     }
                 }
             },
             onError = { message ->
                 InfoCard(
-                    image = Resources.Image.Cat,
-                    title = "Oops..",
-                    subTitle = message
+                    title = "Error",
+                    subTitle = message,
+                    image = Resources.Image.Cat
                 )
             },
             transitionSpec = fadeIn() togetherWith fadeOut()

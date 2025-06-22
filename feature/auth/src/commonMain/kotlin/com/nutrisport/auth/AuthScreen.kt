@@ -44,7 +44,9 @@ fun AuthScreen(
     val messageBarState = rememberMessageBarState()
     var loadingState by remember { mutableStateOf(false) }
 
-    Scaffold { padding ->
+    Scaffold(
+        containerColor = Surface
+    ) { padding ->
         ContentWithMessageBar(
             contentBackgroundColor = Surface,
             modifier = Modifier.padding(
