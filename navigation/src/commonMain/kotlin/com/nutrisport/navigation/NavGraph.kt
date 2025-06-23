@@ -8,9 +8,11 @@ import androidx.navigation.toRoute
 import com.nutrisport.admin_panel.AdminPanelScreen
 import com.nutrisport.auth.AuthScreen
 import com.nutrisport.category_search.CategorySearchScreen
+import com.nutrisport.checkout.CheckoutScreen
 import com.nutrisport.details.DetailsScreen
 import com.nutrisport.home.HomeGraphScreen
 import com.nutrisport.manage_product.ManageProductScreen
+import com.nutrisport.payment_completed.PaymentCompletedScreen
 import com.nutrisport.profile.ProfileScreen
 import com.nutrisport.shared.domain.ProductCategory
 import com.nutrisport.shared.navigation.Screen
@@ -20,7 +22,7 @@ fun SetUpNavGraph(
     startDestination: Screen = Screen.Auth
 ) {
     val navController = rememberNavController()
-    //there is 2 navHost in this application till now one for the auth and home screen
+    //there is 2 navHost in this application, one for the auth and home screen
     //the other one for the bottom bar in the home screen
     NavHost(
         navController = navController,
@@ -53,6 +55,9 @@ fun SetUpNavGraph(
                 },
                 navigateToCategorySearch = { category ->
                     navController.navigate(Screen.CategorySearch(category))
+                },
+                navigateToCheckout = { totalAmount ->
+                    navController.navigate(Screen.Checkout(totalAmount))
                 }
             )
         }
@@ -97,6 +102,31 @@ fun SetUpNavGraph(
                     navController.navigate(Screen.Details(id))
                 },
                 navigateBack = { navController.navigateUp() }
+            )
+        }
+        composable<Screen.Checkout> {
+            val totalAmount = it.toRoute<Screen.Checkout>().totalAmount
+            CheckoutScreen(
+                navigateBack = { navController.navigateUp() },
+                navigateToPaymentCompleted = { isSuccess, error ->
+                    navController.navigate(Screen.PaymentCompleted(isSuccess, error))
+                },
+                totalAmount = totalAmount.toDoubleOrNull() ?: 0.0
+            )
+        }
+        composable<Screen.PaymentCompleted> {
+            val isSuccess = it.toRoute<Screen.PaymentCompleted>().isSuccess
+            val error = it.toRoute<Screen.PaymentCompleted>().error
+            PaymentCompletedScreen(
+                isSuccess = isSuccess,
+                error = error,
+                navigateBack = {
+                    navController.navigate(Screen.HomeGraph) {
+                        launchSingleTop = true
+                        // this will clear backstack completely
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
             )
         }
     }

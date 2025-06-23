@@ -12,12 +12,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.nutrisport.shared.Alpha
 import com.nutrisport.shared.ButtonDisabled
 import com.nutrisport.shared.ButtonPrimary
+import com.nutrisport.shared.ButtonSecondary
 import com.nutrisport.shared.FontSize
+import com.nutrisport.shared.IconPrimary
+import com.nutrisport.shared.Resources
 import com.nutrisport.shared.TextPrimary
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -28,16 +32,16 @@ fun PrimaryButton(
     text: String,
     icon: DrawableResource? = null,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    secondary: Boolean = false,
+    onClick: () -> Unit,
 ) {
     Button(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         onClick = onClick,
         enabled = enabled,
         shape = RoundedCornerShape(size = 6.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = ButtonPrimary,
+            containerColor = if (secondary) ButtonSecondary else ButtonPrimary,
             contentColor = TextPrimary,
             disabledContainerColor = ButtonDisabled,
             disabledContentColor = TextPrimary.copy(alpha = Alpha.DISABLED)
@@ -48,10 +52,13 @@ fun PrimaryButton(
             Icon(
                 modifier = Modifier.size(14.dp),
                 painter = painterResource(icon),
-                contentDescription = "button icon"
+                contentDescription = "Button icon",
+                tint = if (icon == Resources.Image.PaypalLogo) Color.Unspecified
+                else if (!enabled) Color.Gray
+                else IconPrimary
             )
         }
-        Spacer(Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(12.dp))
         Text(
             text = text,
             fontSize = FontSize.REGULAR,
