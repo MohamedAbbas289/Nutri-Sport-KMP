@@ -5,6 +5,7 @@ import com.nutrisport.auth.AuthViewModel
 import com.nutrisport.cart.CartViewModel
 import com.nutrisport.category_search.CategoryScreenViewModel
 import com.nutrisport.checkout.CheckoutViewModel
+import com.nutrisport.checkout.domain.PaypalApi
 import com.nutrisport.data.AdminRepositoryImpl
 import com.nutrisport.data.CustomerRepositoryImpl
 import com.nutrisport.data.OrderRepositoryImpl
@@ -31,6 +32,7 @@ val sharedModule = module {
     single<ProductRepository> { ProductRepositoryImpl() }
     // the koin module is smart enough to get that customer repository we provided in the get() function
     single<OrderRepository> { OrderRepositoryImpl(customerRepository = get()) }
+    single<PaypalApi> { PaypalApi() }
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)

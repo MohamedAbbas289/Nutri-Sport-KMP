@@ -115,7 +115,7 @@ class PaymentViewModel(
                         customerId = customerId,
                         items = customer.value.getSuccessData().cart,
                         totalAmount = totalAmount,
-                        //token = token
+                        token = token
                     ),
                     onSuccess = { println("ORDER SUCCESSFULLY CREATED!") },
                     onError = { message -> onError(message) }
