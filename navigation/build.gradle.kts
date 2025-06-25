@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.compose.navigation)
             implementation(libs.kotlinx.serialization)
 
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+
             implementation(project(path = ":feature:auth"))
             implementation(project(path = ":feature:home"))
             implementation(project(path = ":feature:home:cart:checkout"))

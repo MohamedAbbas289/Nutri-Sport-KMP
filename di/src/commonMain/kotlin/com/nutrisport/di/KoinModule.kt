@@ -20,6 +20,7 @@ import com.nutrisport.manage_product.ManageProductViewModel
 import com.nutrisport.payment_completed.PaymentViewModel
 import com.nutrisport.product_overview.ProductsOverviewViewModel
 import com.nutrisport.profile.ProfileViewModel
+import com.nutrisport.shared.util.IntentHandler
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -33,6 +34,7 @@ val sharedModule = module {
     // the koin module is smart enough to get that customer repository we provided in the get() function
     single<OrderRepository> { OrderRepositoryImpl(customerRepository = get()) }
     single<PaypalApi> { PaypalApi() }
+    single<IntentHandler> { IntentHandler() }
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)
