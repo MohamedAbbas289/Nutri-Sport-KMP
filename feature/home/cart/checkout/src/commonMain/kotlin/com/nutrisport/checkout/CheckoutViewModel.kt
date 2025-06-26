@@ -147,24 +147,33 @@ class CheckoutViewModel(
         onError: (String) -> Unit,
     ) {
         val totalAmount = savedStateHandle.get<String>("totalAmount")
+
         if (totalAmount != null) {
             viewModelScope.launch {
-                paypalApi.beginCheckout(
-                    amount = Amount(
-                        currencyCode = "USD",
-                        value = totalAmount
-                    ),
-                    fullName = "${screenState.firstName} ${screenState.lastName}",
-                    shippingAddress = ShippingAddress(
-                        addressLine1 = screenState.address ?: "Unknown address",
-                        city = screenState.city ?: "Unknown city",
-                        state = screenState.country.name,
-                        postalCode = screenState.postalCode.toString(),
-                        countryCode = screenState.country.code
-                    ),
-                    onSuccess = onSuccess,
+                updateCustomer(
+                    onSuccess = {
+                        viewModelScope.launch {
+                            paypalApi.beginCheckout(
+                                amount = Amount(
+                                    currencyCode = "USD",
+                                    value = totalAmount
+                                ),
+                                fullName = "${screenState.firstName} ${screenState.lastName}",
+                                shippingAddress = ShippingAddress(
+                                    addressLine1 = screenState.address ?: "Unknown address",
+                                    city = screenState.city ?: "Unknown city",
+                                    state = screenState.country.name,
+                                    postalCode = screenState.postalCode.toString(),
+                                    countryCode = screenState.country.code
+                                ),
+                                onSuccess = onSuccess,
+                                onError = onError
+                            )
+                        }
+                    },
                     onError = onError
                 )
+
             }
         } else {
             onError("Total amount couldn't be calculated.")

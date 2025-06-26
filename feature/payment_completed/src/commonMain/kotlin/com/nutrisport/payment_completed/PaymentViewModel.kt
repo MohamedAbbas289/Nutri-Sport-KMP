@@ -31,7 +31,7 @@ class PaymentViewModel(
     private val productRepository: ProductRepository,
 ) : ViewModel() {
     var screenState: RequestState<Unit> by mutableStateOf(RequestState.Loading)
-
+    private var hasOrderBeenCreated = false
     private val customer = customerRepository.readCustomerFlow()
         .stateIn(
             scope = viewModelScope,
@@ -73,6 +73,8 @@ class PaymentViewModel(
     init {
         viewModelScope.launch {
             totalAmount.collectLatest { amount ->
+                if (hasOrderBeenCreated) return@collectLatest
+
                 if (amount.isSuccess()) {
                     val isSuccess = savedStateHandle.get<Boolean>("isSuccess")
                     val error = savedStateHandle.get<String>("error")
@@ -81,11 +83,17 @@ class PaymentViewModel(
                     if (isSuccess != null) {
                         screenState = RequestState.Success(Unit)
                         if (token != null) {
+                            println("payment view model: AMOUNT: ${amount.getSuccessData()}")
+                            println("payment view model: IS SUCCESS: $isSuccess")
+                            println("payment view model: ERROR: $error")
+                            println("payment view model: TOKEN: $token")
+                            hasOrderBeenCreated = true
                             createTheOrder(
                                 totalAmount = amount.getSuccessData(),
                                 token = token,
                                 onError = { message ->
                                     screenState = RequestState.Error(message)
+                                    hasOrderBeenCreated = false
                                 }
                             )
                         }
@@ -118,7 +126,9 @@ class PaymentViewModel(
                         token = token
                     ),
                     onSuccess = { println("ORDER SUCCESSFULLY CREATED!") },
-                    onError = { message -> onError(message) }
+                    onError = { message ->
+                        onError(message)
+                    }
                 )
             }
         } else if (customer.value.isError()) onError(customer.value.getErrorMessage())

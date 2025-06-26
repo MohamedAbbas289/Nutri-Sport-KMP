@@ -36,7 +36,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
 
        // Fetch product details
       const productPromises = order.items.map(async (item) => {
-        const productDoc = await db.collection("product").doc(item.productId).get();
+        const productDoc = await db.collection("products").doc(item.productId).get();
   
         if (!productDoc.exists) {
           console.warn(`🔴 Product with ID ${item.productId} not found.`);
@@ -80,7 +80,7 @@ exports.createEmailDocument = onDocumentCreated("order/{orderId}", async (event)
             <p><strong>City:</strong> ${customer ? customer.city : "N/A"}</p>
             <p><strong>Postal Code:</strong> ${customer ? customer.postalCode : "N/A"}</p>
             <p><strong>Address:</strong> ${customer ? customer.address : "N/A"}</p>
-            <p><strong>Phone:</strong> ${customer && customer.phoneNumber ? `+${customer.phoneNumber.dialCode} ${customer.phoneNumber.number}` 
+            <p><strong>Phone:</strong> ${customer && customer.phoneNumber ? `+${customer.phoneNumber.countryCode} ${customer.phoneNumber.number}` 
     : "N/A"}</p>
           `,
         },

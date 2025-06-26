@@ -48,10 +48,12 @@ kotlin {
 
             implementation(libs.kotlinx.serialization)
 
-            implementation(libs.koin.android)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
+
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.no.arg)
+            implementation(libs.multiplatform.settings.make.observable)
 
             implementation(libs.coil3)
             implementation(libs.coil3.compose)

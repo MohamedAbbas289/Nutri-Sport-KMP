@@ -19,8 +19,7 @@ import com.nutrisport.payment_completed.PaymentCompletedScreen
 import com.nutrisport.profile.ProfileScreen
 import com.nutrisport.shared.domain.ProductCategory
 import com.nutrisport.shared.navigation.Screen
-import com.nutrisport.shared.util.IntentHandler
-import org.koin.compose.koinInject
+import com.nutrisport.shared.util.PreferencesRepository
 
 
 @Composable
@@ -28,16 +27,28 @@ fun SetUpNavGraph(
     startDestination: Screen = Screen.Auth
 ) {
     val navController = rememberNavController()
-    val intentHandler = koinInject<IntentHandler>()
-    val navigateTo by intentHandler.navigateTo.collectAsState()
+//    val intentHandler = koinInject<IntentHandler>()
+//    val navigateTo by intentHandler.navigateTo.collectAsState()
+//
+//    LaunchedEffect(navigateTo) {
+//        navigateTo?.let { paymentCompleted ->
+//            println("NAVIGATING TO PAYMENT COMPLETED")
+//            navController.navigate(paymentCompleted)
+//            intentHandler.resetNavigation()
+//        }
+//    }
+    val preferencesData by PreferencesRepository.readPayPalDataFlow()
+        .collectAsState(initial = null)
 
-    LaunchedEffect(navigateTo) {
-        navigateTo?.let { paymentCompleted ->
-            println("NAVIGATING TO PAYMENT COMPLETED")
-            navController.navigate(paymentCompleted)
-            intentHandler.resetNavigation()
+    LaunchedEffect(preferencesData) {
+        preferencesData?.let { paymentCompleted ->
+            if (paymentCompleted.token != null) {
+                navController.navigate(paymentCompleted)
+                PreferencesRepository.reset()
+            }
         }
     }
+
     //there is 2 navHost in this application, one for the auth and home screen
     //the other one for the bottom bar in the home screen
     NavHost(
@@ -125,17 +136,16 @@ fun SetUpNavGraph(
             CheckoutScreen(
                 navigateBack = { navController.navigateUp() },
                 navigateToPaymentCompleted = { isSuccess, error ->
+                    println("navGraph: totalAmount: $totalAmount")
+                    println("navGraph: isSuccess: $isSuccess")
+                    println("navGraph: error: $error")
                     navController.navigate(Screen.PaymentCompleted(isSuccess, error))
                 },
                 totalAmount = totalAmount.toDoubleOrNull() ?: 0.0
             )
         }
         composable<Screen.PaymentCompleted> {
-            val isSuccess = it.toRoute<Screen.PaymentCompleted>().isSuccess
-            val error = it.toRoute<Screen.PaymentCompleted>().error
             PaymentCompletedScreen(
-                isSuccess = isSuccess,
-                error = error,
                 navigateBack = {
                     navController.navigate(Screen.HomeGraph) {
                         launchSingleTop = true

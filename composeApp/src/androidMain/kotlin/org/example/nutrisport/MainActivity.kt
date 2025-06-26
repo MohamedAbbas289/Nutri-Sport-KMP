@@ -8,11 +8,12 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.nutrisport.shared.util.IntentHandler
-import org.koin.android.ext.android.inject
+import com.mmk.kmpnotifier.notification.NotifierManager
+import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
+import com.mmk.kmpnotifier.permission.permissionUtil
+import com.nutrisport.shared.util.PreferencesRepository
 
 class MainActivity : ComponentActivity() {
-    private val intentHandler: IntentHandler by inject()
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge(
@@ -26,7 +27,14 @@ class MainActivity : ComponentActivity() {
             )
         )
         super.onCreate(savedInstanceState)
-
+        NotifierManager.initialize(
+            configuration = NotificationPlatformConfiguration.Android(
+                notificationIconResId = R.drawable.ic_launcher_foreground,
+                showPushNotification = true
+            )
+        )
+        val permissionUtil by permissionUtil()
+        permissionUtil.askNotificationPermission()
         setContent {
             App()
         }
@@ -40,16 +48,8 @@ class MainActivity : ComponentActivity() {
         val isCancelled = uri?.getQueryParameter("cancel")
         val token = uri?.getQueryParameter("token")
 
-        println("isSuccess: $isSuccess")
-        println("isCancelled: $isCancelled")
 
-//        PreferencesRepository.savePayPalData(
-//            isSuccess = isSuccess?.toBooleanStrictOrNull(),
-//            error = if (isCancelled == "null") null
-//            else "Payment has been canceled.",
-//            token = token
-//        )
-        intentHandler.navigateToPaymentCompleted(
+        PreferencesRepository.savePayPalData(
             isSuccess = isSuccess?.toBooleanStrictOrNull(),
             error = if (isCancelled == "null") null
             else "Payment has been canceled.",

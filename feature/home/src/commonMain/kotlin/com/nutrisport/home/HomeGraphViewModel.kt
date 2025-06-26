@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.math.roundToInt
 
 class HomeGraphViewModel(
     private val customerRepository: CustomerRepository,
@@ -72,8 +73,9 @@ class HomeGraphViewModel(
                     val productPrice = products[cartItem.productId]?.price ?: 0.0
                     productPrice * cartItem.quantity
                 }
+                val roundedTotalPrice = (totalPrice * 100).roundToInt() / 100.0
 
-                flowOf(RequestState.Success(totalPrice))
+                flowOf(RequestState.Success(roundedTotalPrice))
             } else if (data.isError()) flowOf(RequestState.Error(data.getErrorMessage()))
             else flowOf(RequestState.Loading)
         }

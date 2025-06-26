@@ -43,6 +43,7 @@ import com.nutrisport.shared.domain.CartItem
 import com.nutrisport.shared.domain.Product
 import com.nutrisport.shared.domain.QuantityCounterSize
 import org.jetbrains.compose.resources.painterResource
+import kotlin.math.roundToInt
 
 @Composable
 fun CartItemCard(
@@ -53,6 +54,8 @@ fun CartItemCard(
     onMinusClick: (Int) -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    val totalProductPrice = (product?.price?.times(cartItem.quantity))
+    val roundedTotalPrice = (totalProductPrice?.times(100))?.roundToInt()?.div(100.0)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -125,7 +128,7 @@ fun CartItemCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "$${product?.price}",
+                    text = "$${roundedTotalPrice}",
                     color = TextSecondary,
                     fontSize = FontSize.EXTRA_REGULAR,
                     fontWeight = FontWeight.Medium,

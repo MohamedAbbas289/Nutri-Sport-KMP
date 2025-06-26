@@ -20,8 +20,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun PaymentCompletedScreen(
-    isSuccess: Boolean? = null,
-    error: String? = null,
     navigateBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<PaymentViewModel>()

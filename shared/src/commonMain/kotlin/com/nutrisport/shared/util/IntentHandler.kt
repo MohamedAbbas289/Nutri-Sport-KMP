@@ -19,7 +19,7 @@ class IntentHandler {
         _navigateTo.value = Screen.PaymentCompleted(
             isSuccess = isSuccess,
             error = error,
-            //token = token
+            token = token
         )
     }
 

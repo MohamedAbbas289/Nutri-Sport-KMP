@@ -42,7 +42,7 @@ class PaypalApi {
 
     suspend fun fetchAccessToken(
         onSuccess: (String) -> Unit,
-        onError: (String) -> Unit
+        onError: (String) -> Unit,
     ) {
         try {
             val authKey = PAYPAL_AUTH_KEY.encodeBase64()
@@ -62,10 +62,10 @@ class PaypalApi {
                 _accessToken.value = tokenResponse.accessToken
                 onSuccess(tokenResponse.accessToken)
             } else {
-                onError("Error while fetching access token: ${response.status} - ${response.bodyAsText()}")
+                onError("Error while fetching an Access Token: ${response.status} -${response.bodyAsText()}")
             }
         } catch (e: Exception) {
-            onError("Error while fetching access token: ${e.message}")
+            onError("Error while fetching an Access Token: ${e.message}")
         }
     }
 
@@ -100,7 +100,7 @@ class PaypalApi {
             headers {
                 append(HttpHeaders.Authorization, "Bearer ${_accessToken.value}")
                 append(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-                append("Paypal-Request_Id", uniqueId)
+                append("PayPal-Request-Id", uniqueId)
             }
             setBody(orderRequest)
         }
